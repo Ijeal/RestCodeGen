@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="com.dhcc.ms.plugin.datatype.DatatypeWizard"
+            icon="icons/sample.png"
+            id="RestCodeGenerator.wizard2"
+            name="New Datatype Class">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="Datatype"
+            class="com.dhcc.ms.plugin.datatype.preferences.DatatypePreferencePage"
+            id="RestCodeGenerator.page1"
+            name="Datatype">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.dhcc.ms.plugin.datatype.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>
