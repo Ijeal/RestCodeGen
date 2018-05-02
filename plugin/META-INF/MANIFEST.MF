@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RestCodeGenerator
-Bundle-SymbolicName: RestCodeGenerator;singleton:=true
+Bundle-SymbolicName: com.dhcc.ms.RestCodeGenerator;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
-  lib/freemarker-2.3.8.jar,
   lib/jsoup-1.10.2.jar
 Bundle-Activator: com.dhcc.ms.plugin.datatype.Activator
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.12.0",
@@ -16,6 +15,4 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.12.0",
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: RestCodeGenerator
 Bundle-ActivationPolicy: lazy
-Export-Package: com.dhcc.ms.plugin.datatype,
- com.dhcc.ms.plugin.datatype.domain,
- com.dhcc.ms.plugin.datatype.preferences
+
