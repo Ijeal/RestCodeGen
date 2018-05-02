@@ -16,10 +16,10 @@ public class DatatypePreferencePage extends FieldEditorPreferencePage implements
 
 	@Override
 	public void createFieldEditors() {
-		addField(new StringFieldEditor(PreferenceConstants.JAVADOC_URL, "A &javadoc jar url:", getFieldEditorParent()));
-		addField(new ComboFieldEditor(PreferenceConstants.JAVADOC_CHARSET, "A javadoc jar &charset:",
-				new String[][] { { "&UTF-8", "UTF-8" }, { "&GBK", "GBK" } }, getFieldEditorParent()));
-		addField(new StringFieldEditor(PreferenceConstants.ROOT_DATATYPE_PATH, "A &root datatype file path:",
+		addField(new StringFieldEditor(PreferenceConstants.JAVADOC_URL, "A &Javadoc jar url:", getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.JAVADOC_CHARSET, "A Javadoc jar &Charset:",
+				new String[][] { { "UTF-8", "UTF-8" }, { "GBK", "GBK" } }, getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.ROOT_DATATYPE_PATH, "A &Root datatype file path:",
 				getFieldEditorParent()));
 	}
 
