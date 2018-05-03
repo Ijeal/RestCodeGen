@@ -11,6 +11,22 @@ public class JavadocDatatypeRepository {
 		return "jar:file:/" + jarFile.getAbsolutePath() + "!/" + classFilePath;
 	}
 
+	public void init() throws Exception {
+		if (!JavadocJarDownloader.isDownload()) {
+			JavadocJarDownloader.redownload();
+		}
+	}
+
+	public void clean() {
+		Configuration.datatypeCache().clean();
+		Configuration.javadocFile().delete();
+	}
+
+	public void refresh() throws Exception {
+		clean();
+		init();
+	}
+
 	public Set<Datatype> allDatatypes() throws IOException {
 		DatatypeCache cache = Configuration.datatypeCache();
 		if (cache.hasSave()) {
@@ -22,11 +38,6 @@ public class JavadocDatatypeRepository {
 		cache.resave(datatypes);
 
 		return datatypes;
-	}
-
-	public void clean() {
-		Configuration.datatypeCache().clean();
-		Configuration.javadocFile().delete();
 	}
 
 	private Set<Datatype> allDatatypesFromLocalJarFile() throws IOException {
@@ -43,5 +54,4 @@ public class JavadocDatatypeRepository {
 
 		return datatypes;
 	}
-
 }
