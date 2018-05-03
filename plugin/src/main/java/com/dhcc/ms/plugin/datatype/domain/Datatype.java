@@ -9,7 +9,7 @@ public class Datatype implements Serializable {
 	private String simpleClassName;
 	private String description;
 
-	Datatype(String className, String simpleClassName, String description) {
+	public Datatype(String className, String simpleClassName, String description) {
 		this.className = className;
 		this.simpleClassName = simpleClassName;
 		this.description = description;

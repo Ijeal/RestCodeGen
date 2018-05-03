@@ -28,8 +28,6 @@ public class DatatypeWizard extends NewElementWizard {
 
 		fPage = page;
 		fOpenEditorOnFinish = openEditorOnFinish;
-
-		datatypePage = new DatatypeWizardPage();
 	}
 
 	public DatatypeWizard() {
@@ -65,6 +63,10 @@ public class DatatypeWizard extends NewElementWizard {
 			fPage.init(getSelection());
 		}
 		addPage(fPage);
+
+		if (datatypePage == null) {
+			datatypePage = new DatatypeWizardPage(getSelection());
+		}
 		addPage(datatypePage);
 	}
 

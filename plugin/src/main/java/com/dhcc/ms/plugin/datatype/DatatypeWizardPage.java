@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -38,14 +39,17 @@ import org.eclipse.swt.widgets.Text;
 
 import com.dhcc.ms.plugin.datatype.domain.Datatype;
 import com.dhcc.ms.plugin.datatype.domain.DatatypeService;
+import com.dhcc.ms.plugin.datatype.utils.Utils;
 
 public class DatatypeWizardPage extends WizardPage {
-	public DatatypeWizardPage() {
+	public DatatypeWizardPage(IStructuredSelection selection) {
 		super("Select Datatypes");
 		setTitle("Select Datatypes");
 		setDescription("Select the data type as the service field.");
+		this.selection = selection;
 	}
 
+	private IStructuredSelection selection;
 	private Composite pageComposite;
 	private CheckboxTableViewer checkboxTableViewer;
 	private DatatypeChecker checker;
@@ -176,7 +180,7 @@ public class DatatypeWizardPage extends WizardPage {
 			@Override
 			public void run() {
 				try {
-					datatypes = DatatypeService.initialized();
+					datatypes = DatatypeService.initialized(Utils.selectedProject(selection));
 				} catch (Exception e) {
 					MessageDialog.openError(getShell(), "Datatype wizard page", "init datatype data error. " + e);
 				}
@@ -196,7 +200,7 @@ public class DatatypeWizardPage extends WizardPage {
 				@Override
 				public void run() {
 					try {
-						datatypes = DatatypeService.forceRefresh();
+						datatypes = DatatypeService.forceRefresh(Utils.selectedProject(selection));
 					} catch (Exception e) {
 						MessageDialog.openError(getShell(), "Datatype wizard page",
 								"redownload datatype javadoc error. " + e);

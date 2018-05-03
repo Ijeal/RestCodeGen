@@ -7,11 +7,13 @@ Bundle-ClassPath: .,
   lib/jsoup-1.10.2.jar
 Bundle-Activator: com.dhcc.ms.plugin.datatype.Activator
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.12.0",
-  org.eclipse.jface;bundle-version="3.13.2",
-  org.eclipse.ui;bundle-version="3.109.0",
-  org.eclipse.core.runtime;bundle-version="3.13.0",
-  org.eclipse.jdt.core;bundle-version="3.13.102",
-  org.eclipse.jdt.ui;bundle-version="3.13.100"
+ org.eclipse.ui;bundle-version="3.109.0",
+ org.eclipse.core.runtime;bundle-version="3.13.0",
+ org.eclipse.jdt.core;bundle-version="3.13.102",
+ org.eclipse.jdt.ui;bundle-version="3.13.100",
+ org.eclipse.m2e.core;bundle-version="1.8.3",
+ org.eclipse.m2e.jdt;bundle-version="1.8.3",
+ org.eclipse.m2e.maven.runtime;bundle-version="1.8.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: RestCodeGenerator
 Bundle-ActivationPolicy: lazy
