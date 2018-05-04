@@ -4,6 +4,7 @@ import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -17,11 +18,11 @@ public class DownloaderPreferencePage extends FieldEditorPreferencePage implemen
 
 	private ComboFieldEditor downloaderChecker;
 
-	private StringFieldEditor groupIdEditor;
-	private StringFieldEditor artifactIdEditor;
-	private StringFieldEditor versionEditor;
+	private RefreshableStringFieldEditor groupIdEditor;
+	private RefreshableStringFieldEditor artifactIdEditor;
+	private RefreshableStringFieldEditor versionEditor;
 
-	private StringFieldEditor urlEditor;
+	private RefreshableStringFieldEditor urlEditor;
 
 	@Override
 	public void createFieldEditors() {
@@ -33,66 +34,102 @@ public class DownloaderPreferencePage extends FieldEditorPreferencePage implemen
 		addField(downloaderChecker);
 
 		// Maven
-		groupIdEditor = new StringFieldEditor(PreferenceConstants.MAVEN_DOWNLOADER_GROUPID, "&GroupId:",
+		groupIdEditor = new RefreshableStringFieldEditor(PreferenceConstants.MAVEN_DOWNLOADER_GROUPID, "&GroupId *:",
 				getFieldEditorParent());
 		addField(groupIdEditor);
 
-		artifactIdEditor = new StringFieldEditor(PreferenceConstants.MAVEN_DOWNLOADER_ARTIFACTID, "&ArtifactId:",
-				getFieldEditorParent());
+		artifactIdEditor = new RefreshableStringFieldEditor(PreferenceConstants.MAVEN_DOWNLOADER_ARTIFACTID,
+				"&ArtifactId *:", getFieldEditorParent());
 		addField(artifactIdEditor);
 
-		versionEditor = new StringFieldEditor(PreferenceConstants.MAVEN_DOWNLOADER_VERSION, "&Version:",
+		versionEditor = new RefreshableStringFieldEditor(PreferenceConstants.MAVEN_DOWNLOADER_VERSION, "&Version *:",
 				getFieldEditorParent());
 		addField(versionEditor);
 
 		// Url
-		urlEditor = new StringFieldEditor(PreferenceConstants.URL_DOWNLOADER_PATH, "&Url:", getFieldEditorParent());
+		urlEditor = new RefreshableStringFieldEditor(PreferenceConstants.URL_DOWNLOADER_PATH, "&Url *:",
+				getFieldEditorParent());
 		addField(urlEditor);
 
-		defaultFieldEditorEnableStatus();
+		initFieldEditorsEnableStatus(
+				Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.DOWNLOADER_TYPE));
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
+		boolean isTypeChanged = event.getSource().equals(downloaderChecker)
+				&& !event.getNewValue().equals(event.getOldValue());
+		if (isTypeChanged) {
+			setValid(true);
+			initFieldEditorsEnableStatus(event.getNewValue());
+			checkFieldEditorsState();
+		}
+
 		super.propertyChange(event);
-
-		if (!event.getSource().equals(downloaderChecker)) {
-			return;
-		}
-
-		if (PreferenceConstants.MAVEN_DOWNLOADER_TYPE.equals(event.getNewValue())) {
-			mavenFieldEditorEnableStatus();
-		} else {
-			urlFieldEditorEnableStatus();
-		}
 	}
 
 	private void defaultFieldEditorEnableStatus() {
-		mavenFieldEditorEnableStatus();
+		mavenFieldEditorsEnableStatus();
 	}
 
-	private void mavenFieldEditorEnableStatus() {
+	private void initFieldEditorsEnableStatus(Object downloaderType) {
+		if (PreferenceConstants.MAVEN_DOWNLOADER_TYPE.equals(downloaderType)) {
+			mavenFieldEditorsEnableStatus();
+		} else {
+			urlFieldEditorsEnableStatus();
+		}
+	}
+
+	private void mavenFieldEditorsEnableStatus() {
 		groupIdEditor.setEnabled(true, getFieldEditorParent());
 		artifactIdEditor.setEnabled(true, getFieldEditorParent());
 		versionEditor.setEnabled(true, getFieldEditorParent());
 		urlEditor.setEnabled(false, getFieldEditorParent());
+
+		groupIdEditor.setEmptyStringAllowed(false);
+		artifactIdEditor.setEmptyStringAllowed(false);
+		versionEditor.setEmptyStringAllowed(false);
+		urlEditor.setEmptyStringAllowed(true);
 	}
 
-	private void urlFieldEditorEnableStatus() {
+	private void urlFieldEditorsEnableStatus() {
 		groupIdEditor.setEnabled(false, getFieldEditorParent());
 		artifactIdEditor.setEnabled(false, getFieldEditorParent());
 		versionEditor.setEnabled(false, getFieldEditorParent());
 		urlEditor.setEnabled(true, getFieldEditorParent());
+
+		groupIdEditor.setEmptyStringAllowed(true);
+		artifactIdEditor.setEmptyStringAllowed(true);
+		versionEditor.setEmptyStringAllowed(true);
+		urlEditor.setEmptyStringAllowed(false);
+	}
+
+	private void checkFieldEditorsState() {
+		@SuppressWarnings("unused")
+		boolean shortValidState = groupIdEditor.getRefreshValidState() && artifactIdEditor.getRefreshValidState()
+				&& versionEditor.getRefreshValidState() && urlEditor.getRefreshValidState();
+
+		checkState();
 	}
 
 	@Override
 	protected void performDefaults() {
-		super.performDefaults();
 		defaultFieldEditorEnableStatus();
+		super.performDefaults();
 	}
 
 	@Override
 	public void init(IWorkbench workbench) {
 	}
+}
 
+class RefreshableStringFieldEditor extends StringFieldEditor {
+	public RefreshableStringFieldEditor(String name, String labelText, Composite parent) {
+		super(name, labelText, parent);
+	}
+
+	public boolean getRefreshValidState() {
+		refreshValidState();
+		return isValid();
+	}
 }
