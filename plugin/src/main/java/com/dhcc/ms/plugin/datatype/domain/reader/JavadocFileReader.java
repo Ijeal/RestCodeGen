@@ -2,6 +2,7 @@ package com.dhcc.ms.plugin.datatype.domain.reader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -31,16 +32,38 @@ public class JavadocFileReader implements JavadocReader {
 	public Set<Datatype> allDatatypes(File javadocFile) throws Exception {
 		String rootDatatypePageAbsolutePath = rootDatatypePageAbsolutePath(javadocFile);
 
-		Reader reader = new Reader(rootDatatypePageAbsolutePath, charset);
-		Set<String> paths = reader.inheritanceClassFileAbsolutePaths();
+		Set<String> paths = null;
 
-		Set<Datatype> datatypes = new HashSet<Datatype>(paths.size());
-		for (String path : paths) {
-			Reader inReader = new Reader(path, charset);
-			datatypes.add(new Datatype(inReader.className(), inReader.simpleClassName(), inReader.classDescription()));
+		Reader reader = new Reader(rootDatatypePageAbsolutePath, charset);
+		try {
+			paths = reader.inheritanceClassFileAbsolutePaths();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
 		}
 
+		return readToDatatypes(paths);
+
+	}
+
+	private Set<Datatype> readToDatatypes(Set<String> allClassPageAbsolutePaths) throws Exception {
+		Set<Datatype> datatypes = new HashSet<Datatype>(allClassPageAbsolutePaths.size());
+		for (String path : allClassPageAbsolutePaths) {
+			datatypes.add(readToDatatype(path));
+		}
 		return datatypes;
+	}
+
+	private Datatype readToDatatype(String classPageAbsolutePath) throws Exception {
+		Reader inReader = new Reader(classPageAbsolutePath, charset);
+		try {
+			return new Datatype(inReader.className(), inReader.simpleClassName(), inReader.classDescription());
+		} finally {
+			if (inReader != null) {
+				inReader.close();
+			}
+		}
 	}
 
 	@Override
@@ -53,9 +76,11 @@ class Reader {
 	private String classFilePath;
 	private URL classFileUrl;
 	private String charset;
+
+	private InputStream in;
 	private Document document;
 
-	public Reader(String classFilePath, String charset) throws MalformedURLException {
+	Reader(String classFilePath, String charset) throws MalformedURLException {
 		this.classFilePath = classFilePath;
 		this.classFileUrl = new URL(classFilePath);
 		this.charset = charset;
@@ -66,11 +91,12 @@ class Reader {
 			return document;
 		}
 
-		document = Jsoup.parse(classFileUrl.openStream(), charset, classFilePath);
+		in = classFileUrl.openStream();
+		document = Jsoup.parse(in, charset, classFilePath);
 		return document;
 	}
 
-	public Set<String> inheritanceClassFileAbsolutePaths() throws IOException {
+	Set<String> inheritanceClassFileAbsolutePaths() throws IOException {
 		Elements allDatatypeDocPathElements = jarFileDocument().getElementsByClass("description").get(0)
 				.getElementsContainingOwnText("所有已知实现类").first().parent().getElementsByTag("a");
 
@@ -83,17 +109,26 @@ class Reader {
 		return readers;
 	}
 
-	public String className() throws IOException {
+	String className() throws IOException {
 		return jarFileDocument().getElementsByClass("contentContainer").first().getElementsByClass("inheritance").last()
 				.getElementsByTag("li").first().text();
 	}
 
-	public String simpleClassName() throws IOException {
+	String simpleClassName() throws IOException {
 		return jarFileDocument().getElementsByClass("typeNameLabel").first().text();
 	}
 
-	public String classDescription() throws IOException {
+	String classDescription() throws IOException {
 		return jarFileDocument().getElementsByClass("contentContainer").first().getElementsByClass("block").first()
 				.text();
+	}
+
+	void close() {
+		try {
+			if (in != null) {
+				in.close();
+			}
+		} catch (IOException e) {
+		}
 	}
 }

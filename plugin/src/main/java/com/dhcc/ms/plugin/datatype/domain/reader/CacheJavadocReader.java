@@ -52,7 +52,13 @@ class DatatypeCache {
 		}
 
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(cacheFile));
-		out.writeObject(datatypes);
+		try {
+			out.writeObject(datatypes);
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
 	}
 
 	public boolean hasSave() {
@@ -69,6 +75,10 @@ class DatatypeCache {
 			return (Set<Datatype>) in.readObject();
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
 		}
 	}
 
