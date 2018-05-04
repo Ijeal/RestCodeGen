@@ -12,8 +12,6 @@ import org.eclipse.jdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jdt.ui.wizards.NewClassWizardPage;
 
-import com.dhcc.ms.plugin.datatype.domain.Datatype;
-
 public class DatatypeWizard extends NewElementWizard {
 
 	private NewClassWizardPage fPage;
@@ -45,18 +43,9 @@ public class DatatypeWizard extends NewElementWizard {
 				@Override
 				protected void createTypeMembers(IType type, ImportsManager imports, IProgressMonitor monitor)
 						throws CoreException {
+					new TypeMembersCreator().createFields(datatypePage.selectedElements(), type, imports, monitor);
+
 					super.createTypeMembers(type, imports, monitor);
-
-					for (Datatype datatype : datatypePage.selectedElements()) {
-						imports.addImport(datatype.getClassName());
-
-						String comment = "/** \n * " + datatype.getDescription() + "\n */\n";
-						String fieldName = Character.toLowerCase(datatype.getSimpleClassName().charAt(0))
-								+ datatype.getSimpleClassName().substring(1);
-						String field = "private " + datatype.getSimpleClassName() + " " + fieldName + " = null;";
-						String contents = comment + field;
-						type.createField(contents, null, true, monitor);
-					}
 				}
 			};
 			fPage.setWizard(this);
