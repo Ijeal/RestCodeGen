@@ -33,7 +33,7 @@ public class JavadocDownloaderFactory {
 	}
 
 	private static String localPath() {
-		return null;
+		return Activator.getDefault().getStateLocation().append("validator-javadoc.jar").toString();
 	}
 
 	public static JavadocDownloader createJavadocDownloder(IProject project) {
