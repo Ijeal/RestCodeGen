@@ -12,7 +12,8 @@ public class JavadocDownloaderFactory {
 	}
 
 	private static boolean isMavenDownloader() {
-		return Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.DOWNLOADER_TYPE);
+		return PreferenceConstants.MAVEN_DOWNLOADER_TYPE
+				.equals(Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.DOWNLOADER_TYPE));
 	}
 
 	private static String groupId() {
