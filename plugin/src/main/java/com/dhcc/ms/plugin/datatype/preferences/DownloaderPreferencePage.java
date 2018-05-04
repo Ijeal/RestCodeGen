@@ -49,7 +49,7 @@ public class DownloaderPreferencePage extends FieldEditorPreferencePage implemen
 		urlEditor = new StringFieldEditor(PreferenceConstants.URL_DOWNLOADER_PATH, "&Url:", getFieldEditorParent());
 		addField(urlEditor);
 
-		urlEditor.setEnabled(false, getFieldEditorParent());
+		defaultFieldEditorEnableStatus();
 	}
 
 	@Override
@@ -61,16 +61,34 @@ public class DownloaderPreferencePage extends FieldEditorPreferencePage implemen
 		}
 
 		if (PreferenceConstants.MAVEN_DOWNLOADER_TYPE.equals(event.getNewValue())) {
-			groupIdEditor.setEnabled(true, getFieldEditorParent());
-			artifactIdEditor.setEnabled(true, getFieldEditorParent());
-			versionEditor.setEnabled(true, getFieldEditorParent());
-			urlEditor.setEnabled(false, getFieldEditorParent());
+			mavenFieldEditorEnableStatus();
 		} else {
-			groupIdEditor.setEnabled(false, getFieldEditorParent());
-			artifactIdEditor.setEnabled(false, getFieldEditorParent());
-			versionEditor.setEnabled(false, getFieldEditorParent());
-			urlEditor.setEnabled(true, getFieldEditorParent());
+			urlFieldEditorEnableStatus();
 		}
+	}
+
+	private void defaultFieldEditorEnableStatus() {
+		mavenFieldEditorEnableStatus();
+	}
+
+	private void mavenFieldEditorEnableStatus() {
+		groupIdEditor.setEnabled(true, getFieldEditorParent());
+		artifactIdEditor.setEnabled(true, getFieldEditorParent());
+		versionEditor.setEnabled(true, getFieldEditorParent());
+		urlEditor.setEnabled(false, getFieldEditorParent());
+	}
+
+	private void urlFieldEditorEnableStatus() {
+		groupIdEditor.setEnabled(false, getFieldEditorParent());
+		artifactIdEditor.setEnabled(false, getFieldEditorParent());
+		versionEditor.setEnabled(false, getFieldEditorParent());
+		urlEditor.setEnabled(true, getFieldEditorParent());
+	}
+
+	@Override
+	protected void performDefaults() {
+		super.performDefaults();
+		defaultFieldEditorEnableStatus();
 	}
 
 	@Override
