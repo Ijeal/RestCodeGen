@@ -8,15 +8,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.dhcc.ms.plugin.datatype.Activator;
 
-public class DatatypePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-	public DatatypePreferencePage() {
+public class ReaderPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+	public ReaderPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 	}
 
 	@Override
 	public void createFieldEditors() {
-		addField(new StringFieldEditor(PreferenceConstants.JAVADOC_URL, "A &Javadoc jar url:", getFieldEditorParent()));
 		addField(new ComboFieldEditor(PreferenceConstants.JAVADOC_CHARSET, "A Javadoc jar &Charset:",
 				new String[][] { { "UTF-8", "UTF-8" }, { "GBK", "GBK" } }, getFieldEditorParent()));
 		addField(new StringFieldEditor(PreferenceConstants.ROOT_DATATYPE_PATH, "A &Root datatype file path:",

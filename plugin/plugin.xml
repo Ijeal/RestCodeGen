@@ -2,34 +2,35 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         point="org.eclipse.ui.newWizards">
+   <extension point="org.eclipse.ui.newWizards">
       <wizard
+            id="com.dhcc.ms.plugin.datatype.newWizards.datatype"
             class="com.dhcc.ms.plugin.datatype.DatatypeWizard"
             icon="icons/sample.png"
-            id="RestCodeGenerator.wizard2"
             name="New Datatype Class">
       </wizard>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.preferencePages">
+   <extension point="org.eclipse.ui.preferencePages">
       <page
-            category="Datatype"
-            class="com.dhcc.ms.plugin.datatype.preferences.DatatypePreferencePage"
-            id="RestCodeGenerator.page1"
+            id="com.dhcc.ms.plugin.datatype.preference.datatype"
+            class="com.dhcc.ms.plugin.datatype.preferences.ReaderPreferencePage"
             name="Datatype">
       </page>
+      <page
+            id="com.dhcc.ms.plugin.datatype.preference.downloader"
+            category="com.dhcc.ms.plugin.datatype.preference.datatype"
+            class="com.dhcc.ms.plugin.datatype.preferences.DownloaderPreferencePage"
+            name="Downloader">
+      </page>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
+   <extension point="org.eclipse.core.runtime.preferences">
       <initializer
             class="com.dhcc.ms.plugin.datatype.preferences.PreferenceInitializer">
       </initializer>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.commands">
+   <extension point="org.eclipse.ui.commands">
       <category
             id="com.dhcc.ms.plugin.datatype.command.category.Datatype"
             name="Datatype">
@@ -40,8 +41,7 @@
             name="DatatypeWizard">
       </command>
    </extension>
-   <extension
-         point="org.eclipse.ui.handlers">
+   <extension point="org.eclipse.ui.handlers">
       <handler
             class="com.dhcc.ms.plugin.datatype.DatatypeWizardHandler"
             commandId="com.dhcc.ms.plugin.datatype.command.DatatypeWizard">
@@ -55,8 +55,7 @@
       </key>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.menus">
+   <extension point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
@@ -70,7 +69,7 @@
                   label="New Class"
                   mnemonic="N"
                   style="push">
-                  <visibleWhen  checkEnabled="false">
+                  <visibleWhen checkEnabled="false">
                         <with variable="selection">
                               <count value="1">
                               </count>

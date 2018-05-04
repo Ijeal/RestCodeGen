@@ -12,19 +12,19 @@ public class JavadocDownloaderFactory {
 	}
 
 	private static boolean isMavenDownloader() {
-		return true;
+		return Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.DOWNLOADER_TYPE);
 	}
 
 	private static String groupId() {
-		return "com.dhcc.ms";
+		return Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.MAVEN_DOWNLOADER_GROUPID);
 	}
 
 	private static String artifactId() {
-		return "validator";
+		return Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.MAVEN_DOWNLOADER_ARTIFACTID);
 	}
 
 	private static String version() {
-		return "1.0.0-SNAPSHOT";
+		return Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.MAVEN_DOWNLOADER_VERSION);
 	}
 
 	private static String url() {
