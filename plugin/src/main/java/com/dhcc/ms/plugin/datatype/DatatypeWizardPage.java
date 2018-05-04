@@ -173,21 +173,31 @@ public class DatatypeWizardPage extends WizardPage {
 		deselectButton.addMouseListener(checker.deselectAll());
 	}
 
-	private Set<Datatype> datatypes;
-
 	private void createInput() throws Exception {
-		Display.getCurrent().syncExec(new Runnable() {
+		Utils.job("init datatyps data", new Runnable() {
 			@Override
 			public void run() {
 				try {
-					datatypes = DatatypeService.initialized(Utils.selectedProject(selection));
+					Set<Datatype> datatypes = DatatypeService.initialized(Utils.selectedProject(selection));
+
+					Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							checkboxTableViewer.setInput(datatypes);
+						}
+					});
 				} catch (Exception e) {
-					MessageDialog.openError(getShell(), "Datatype wizard page", "init datatype data error. " + e);
+					Display.getDefault().syncExec(new Runnable() {
+						@Override
+						public void run() {
+							MessageDialog.openError(getShell(), "Datatype wizard page",
+									"init datatype data error. " + e);
+						}
+					});
+
 				}
 			}
-		});
-
-		checkboxTableViewer.setInput(datatypes);
+		}).schedule();
 	}
 
 	class DatatypesMouseAdapter extends MouseAdapter {
@@ -195,20 +205,29 @@ public class DatatypeWizardPage extends WizardPage {
 		public void mouseDown(MouseEvent e) {
 			checker.cleanCheckedDatatypes();
 
-			Display.getCurrent().syncExec(new Runnable() {
-
+			Utils.job("init datatyps data", new Runnable() {
 				@Override
 				public void run() {
 					try {
-						datatypes = DatatypeService.forceRefresh(Utils.selectedProject(selection));
+						Set<Datatype> datatypes = DatatypeService.forceRefresh(Utils.selectedProject(selection));
+
+						Display.getDefault().asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								checkboxTableViewer.setInput(datatypes);
+							}
+						});
 					} catch (Exception e) {
-						MessageDialog.openError(getShell(), "Datatype wizard page",
-								"redownload datatype javadoc error. " + e);
+						Display.getDefault().asyncExec(new Runnable() {
+							@Override
+							public void run() {
+								MessageDialog.openError(getShell(), "Datatype wizard page",
+										"redownload datatype javadoc error. " + e);
+							}
+						});
 					}
 				}
-			});
-
-			checkboxTableViewer.setInput(datatypes);
+			}).schedule();
 		}
 	}
 }

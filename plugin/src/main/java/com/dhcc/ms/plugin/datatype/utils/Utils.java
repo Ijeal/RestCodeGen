@@ -8,6 +8,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.internal.ui.packageview.PackageFragmentRootContainer;
@@ -53,5 +57,15 @@ public class Utils {
 		} else {
 			return MavenPlugin.getMaven().getArtifactRepositories();
 		}
+	}
+
+	public static Job job(String name, Runnable run) {
+		return new Job(name) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				run.run();
+				return Status.OK_STATUS;
+			}
+		};
 	}
 }
