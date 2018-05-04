@@ -3,7 +3,6 @@ package com.dhcc.ms.plugin.datatype.domain;
 import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 
 import com.dhcc.ms.plugin.datatype.Activator;
 import com.dhcc.ms.plugin.datatype.domain.reader.CacheJavadocReader;
@@ -20,7 +19,7 @@ public class JavadocReaderFactory {
 	}
 
 	private static IPath initFolder() {
-		IPath path = ConfigurationScope.INSTANCE.getLocation().append("com.dhcc.ms.plugin").append("datatype");
+		IPath path = Activator.getDefault().getStateLocation().append("datatype");
 
 		File folder = path.toFile();
 		if (!folder.exists()) {
